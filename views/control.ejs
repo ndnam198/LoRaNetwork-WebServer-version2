@@ -130,8 +130,7 @@
     </main>
     <script>
         /* Reload function every 2000ms */
-        var port = process.env.PORT || 3001;
-        var socket = io(`https://datn-loraserver.herokuapp.com:${port}`);
+        var socket = io();
         $(document).ready(function () {
             /* Add handler for control button */
             var reqIndex = 0;

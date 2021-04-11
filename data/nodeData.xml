@@ -4,21 +4,21 @@
             <index>1</index>
             <nodeID>123</nodeID>
             <location>Trần Duy Hưng</location>
-            <status>off</status>
+            <status>on</status>
             <error/>
         </node>
         <node>
             <index>2</index>
             <nodeID>456</nodeID>
             <location>Lê Văn Lương</location>
-            <status>off</status>
+            <status>on</status>
             <error/>
         </node>
         <node>
             <index>3</index>
             <nodeID>789</nodeID>
             <location>Yên Lãng</location>
-            <status>off</status>
+            <status>on</status>
             <error/>
         </node>
     </nodedata>
