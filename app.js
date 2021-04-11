@@ -6,7 +6,10 @@ app.set('view engine', 'ejs');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var modifier = require('./scripts/xmlModifier');
-server.listen(3001);
+
+server.listen(process.env.PORT || 3001, function () {
+    console.log("listening...");
+}
 
 io.on('connection', function (socket) {
     console.log('new connection ' + socket.id);
