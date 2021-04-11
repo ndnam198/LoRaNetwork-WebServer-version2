@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Nguyễn Đức Nam">
+    <meta name="generator" content="Hugo 0.82.0">
+    <title>LoRa Server - Control Site</title>
+
+    <link rel="stylesheet" type="text/css" href="../public/bootstrap5.0/css/bootstrap.min.css">
+    <script src="../public/jquery-3.6.0.min.js"></script>
+    <script src="../public/bootstrap5.0/js/bootstrap.min.js"></script>
+    <script src='../public/socket.io.js'></script>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .light-blue {
+            background-color: aqua;
+        }
+    </style>
+
+</head>
+
+<body class="">
+    <main class="">
+        <div class="container">
+            <!-- Heading -->
+            <div class="w-100 d-flex justify-content-center p-4">
+                <div class="text-uppercase">
+                    <h1 class="font-weight-bold">hệ thống điều khiển chiếu sáng</h1>
+                </div>
+            </div>
+            <!-- Button "BẬT TOÀN BỘ - TẮT TOÀN BỘ" -->
+            <div class="d-flex p-4">
+                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                    <button type="button" id="btnAllOnID" class="btn btn-success">BẬT TOÀN BỘ</button>
+                    <button type="button" id="btnAllOffID" class="btn btn-secondary">TẮT TOÀN BỘ</button>
+                </div>
+            </div>
+            <div class="row d-flex align-content-center justify-content-xl-evenly">
+                <!-- Single node block -->
+                <div class="col-2 text-center border rounded p-2" id="node0_background">
+                    <div class="border border-dark border-secondary p-1">
+                        <span>ID: </span><span id="node0_id">NodeID0</span>
+                    </div>
+                    <div>
+                        <div class="p-1">
+                            <span>Location: </span><span id="node0_location"></span>
+                        </div>
+                        <div class="p-1" id="node0_status">
+                            OFF
+                        </div>
+                        <div>
+                            <span class="p-2">Error: </span><span id="node0_error"></span>
+                        </div>
+                        <div class="p-2 d-flex justify-content-center">
+                            <div class="btn-group" role="group">
+                                <div type="button" class="btn btn-success" id="onButton0_id">Bật</div>
+                                <div type="button" class="btn btn-secondary" id="offButton0_id">Tắt</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single node block -->
+                <div class="col-2 text-center border rounded p-2" id="node1_background">
+                    <div class="border border-dark border-secondary p-1">
+                        <span>ID: </span><span id="node1_id">NodeID1</span>
+                    </div>
+                    <div>
+                        <div class="p-1">
+                            <span>Location: </span><span id="node1_location"></span>
+                        </div>
+                        <div class="p-1" id="node1_status">
+                            OFF
+                        </div>
+                        <div>
+                            <span class="p-2">Error: </span><span id="node1_error"></span>
+                        </div>
+                        <div class="p-2 d-flex justify-content-center">
+                            <div class="btn-group" role="group">
+                                <div type="button" class="btn btn-success" id="onButton1_id">Bật</div>
+                                <div type="button" class="btn btn-secondary" id="offButton1_id">Tắt</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single node block -->
+                <div class="col-2 text-center border rounded p-2" id="node2_background">
+                    <div class="border border-dark border-secondary p-1">
+                        <span>ID: </span><span id="node2_id">NodeID2</span>
+                    </div>
+                    <div>
+                        <div class="p-1">
+                            <span>Location: </span><span id="node2_location"></span>
+                        </div>
+                        <div class="p-1" id="node2_status">
+                            OFF
+                        </div>
+                        <div>
+                            <span class="p-2">Error: </span><span id="node2_error"></span>
+                        </div>
+                        <div class="p-2 d-flex justify-content-center">
+                            <div class="btn-group" role="group">
+                                <div type="button" class="btn btn-success" id="onButton2_id">Bật</div>
+                                <div type="button" class="btn btn-secondary" id="offButton2_id">Tắt</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-xxl-start">
+                <div class="col-1 bg-primary border rounded"></div>
+            </div>
+        </div>
+    </main>
+    <script>
+        /* Reload function every 2000ms */
+        var socket = io('http://localhost:3001');
+        $(document).ready(function () {
+            /* Add handler for control button */
+            var reqIndex = 0;
+            document.getElementById("btnAllOnID").addEventListener("click", onAllLightClick);
+            document.getElementById("btnAllOffID").addEventListener("click", offAllLightClick);
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`onButton${i}_id`).addEventListener("click", onSingleLightClick);
+                document.getElementById(`offButton${i}_id`).addEventListener("click", offSingleLightClick);
+            }
+            function onAllLightClick() {
+                console.log("Turn ON all");
+                var sendInfo = {
+                    "source": "browser",
+                    "type": "control",
+                    "nodeID": '*',
+                    "status": "on",
+                    "sequenceID": ++reqIndex,
+                    "timestamp": Math.floor(new Date().getTime() / 1000)
+                }
+                socket.emit('controlAll', sendInfo);
+            }
+
+            function offAllLightClick() {
+                console.log("Turn OFF all");
+                var sendInfo = {
+                    "source": "browser",
+                    "type": "control",
+                    "nodeID": '*',
+                    "status": "off",
+                    "sequenceID": ++reqIndex,
+                    "timestamp": Math.floor(new Date().getTime() / 1000)
+                }
+                socket.emit('controlAll', sendInfo);
+            }
+
+            function onSingleLightClick() {
+                nodeNumber = this.id.match(/\d+/)[0];
+                console.log("Turn ON NodeID:" + $(`#node${nodeNumber}_id`).text());
+                var sendInfo = {
+                    "source": "browser",
+                    "type": "control",
+                    "nodeID": $(`#node${nodeNumber}_id`).text(),
+                    "status": "on",
+                    "sequenceID": reqIndex,
+                    "timestamp": Math.floor(new Date().getTime() / 1000)
+                }
+                socket.emit('controlSingle', sendInfo);
+            }
+
+            function offSingleLightClick() {
+                nodeNumber = this.id.match(/\d+/)[0];
+                console.log("Turn ON NodeID:" + $(`#node${nodeNumber}_id`).text());
+                var sendInfo = {
+                    "source": "browser",
+                    "type": "control",
+                    "nodeID": $(`#node${nodeNumber}_id`).text(),
+                    "status": "off",
+                    "sequenceID": reqIndex,
+                    "timestamp": Math.floor(new Date().getTime() / 1000)
+                }
+                socket.emit('controlSingle', sendInfo);
+            }
+
+            socket.on('updateData', function (msg) {
+                for (let i = 0; i < 3; i++) {
+                    $(`#node${i}_id`).text(msg[`node${i}_id`]);
+                    $(`#node${i}_location`).text(msg[`node${i}_location`]);
+                    $(`#node${i}_status`).text(msg[`node${i}_status`]);
+                    $(`#node${i}_error`).text(msg[`node${i}_error`]);
+                    if (msg[`node${i}_status`] === 'ON') {
+                        $(`#node${i}_status`).css('background-color', '#00FF00');
+                    }
+                    else if (msg[`node${i}_status`] === 'OFF' && !msg[`node${i}_error`]) {
+                        $(`#node${i}_status`).css('background-color', '#808080');
+                    }
+                    else if (msg[`node${i}_error`]) {
+                        $(`#node${i}_status`).css('background-color', '#FF0000');
+                    }
+                }
+            })
+
+        })
+    </script>
+</body>
+
+</html>
