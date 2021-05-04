@@ -104,7 +104,9 @@ try {
                         msg['nodeID'] = dbAsJson.data.nodedata.node[i].nodeID._text;
                         msg['status'] = data['status'];
                         msg['opcode'] = constant.OPCODE['REQUEST_RELAY_CONTROL']
-                        pi_socket.write(JSON.stringify(msg));
+                        setTimeout(function () {
+                            pi_socket.write(JSON.stringify(msg));
+                        }, 300);
                         console.log(msg)
                     }
                 }
