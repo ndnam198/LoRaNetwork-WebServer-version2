@@ -19,11 +19,6 @@ const { default: consoleStamp } = require('console-stamp');
 
 // var server2 = new Server({ port: process.env.WEB_PORT || 5000 }) // see `ws` docs for other options
 const WEB_PORT = process.env.PORT || 3000;
-const PI_PORT = process.env.PORT2 || 3001;
-var server2 = new Server({ server: server, path: "/pi" })
-server.listen(WEB_PORT, function () {
-    console.log("web_socket listening on port " + WEB_PORT + "...");
-});
 
 // see `ws` docs for other options
 
@@ -34,7 +29,11 @@ var web_sock_list = {};
 var pi_sock_list = {}
 
 try {
-    console.log('pi_socket listening on port: ' + server2.opts.port + ' ' + server2['_server']['options']['port'] + ' ' + PI_PORT);
+    server.listen(WEB_PORT, function () {
+        console.log("web_socket listening on port " + WEB_PORT + "...");
+    });
+    var server2 = new Server({ server: server, path: "/pi" })
+    console.log('pi_socket listening on url: ' + server2.opts.path);
     server2.on('connection', function (pi_socket) {
         pi_socket.id = pi_id++;
         pi_socket.userList = {};
@@ -46,7 +45,9 @@ try {
             data = bData.toString();
             if (data.includes('ping')) {
                 i = data.replace(/[^0-9]/g, '');
-                pi_socket.write(`pong ${i}`)
+                sendData = `pong ${i}`
+                console.log(sendData)
+                pi_socket.write(sendData)
             }
             else {
                 console.log("[" + pi_socket.id + "] pi's data: ", data);
@@ -59,7 +60,7 @@ try {
                     msg[constant.MSG_INDEX['DATA_ERR_CODE']],
                     function () {
                         for (const i in pi_socket.userList) {
-                            // console.log('----> emit updateData to userID: ', i);
+                            console.log('----> emit updateData to userID: ', i);
                             pi_socket.userList[i].emit('updateData', modifier.getDbAsObj());
                         }
                     }
@@ -103,11 +104,9 @@ try {
                     for (let i = 0; i < dbAsJson.data.nodedata.node.length; i++) {
                         msg['nodeID'] = dbAsJson.data.nodedata.node[i].nodeID._text;
                         msg['status'] = data['status'];
-                        msg['opcode'] = constant.OPCODE['REQUEST_RELAY_CONTROL']
-                        setTimeout(function () {
-                            pi_socket.write(JSON.stringify(msg));
-                        }, 300);
-                        console.log(msg)
+                        msg['opcode'] = constant.OPCODE['REQUEST_RELAY_CONTROL'];
+                        pi_socket.write(JSON.stringify(msg));
+                        console.log(msg);
                     }
                 }
             });

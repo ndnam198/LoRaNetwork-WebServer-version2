@@ -33,7 +33,7 @@ module.exports = {
         var currentXml = xmlParser.xml2js(xml, options);
         if (!currentXml || !currentXml.data.nodedata || !Array.isArray(currentXml.data.nodedata.node))
             return;
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < currentXml.data.nodedata.node.length; i++) {
             if (currentXml.data.nodedata.node[i].nodeID._text == id) {
                 /* if node has no error */
                 console.log('update node id = ' + id);

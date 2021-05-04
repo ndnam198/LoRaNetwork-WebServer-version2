@@ -1,16 +1,20 @@
 <data>
     <users>
         <user>
-            <username>nam</username>
-            <password>123</password>
+            <username>admin</username>
+            <password>2212</password>
         </user>
         <user>
             <username>minh</username>
-            <password>123</password>
+            <password>minh123</password>
         </user>
         <user>
             <username>thanh</username>
-            <password>123</password>
+            <password>thanh123</password>
+        </user>
+        <user>
+            <username>guest</username>
+            <password>guest</password>
         </user>
     </users>
     <nodedata>
@@ -32,7 +36,14 @@
             <index>3</index>
             <nodeID>20</nodeID>
             <location>GIAI_PHONG_3</location>
-            <status>on</status>
+            <status>off</status>
+            <error/>
+        </node>
+        <node>
+            <index>4</index>
+            <nodeID>21</nodeID>
+            <location>GIAI_PHONG_4</location>
+            <status>off</status>
             <error/>
         </node>
     </nodedata>

@@ -57,32 +57,38 @@
         <form>
             <img class="mb-4" src="../public/images/tux.svg" alt="" width="100" height="100">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-
             <div class="form-floating">
-                <input type="text" name="username" class="form-control" id="usernameID" placeholder="Username" required>
+                <input type="text" name="username" class="form-control" id="usernameID" required>
                 <label for="usernameID">Username</label>
             </div>
-
             <div class="form-floating">
-                <input type="password" name="password" class="form-control" id="passwdID" placeholder="Password"
-                    required>
+                <input type="password" name="password" class="form-control" id="passwdID" required>
                 <label for="passwdID">Password</label>
             </div>
-
             <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" value="remember-me"> Show password
-                </label>
+                <!-- <label> -->
+                <div><input type="checkbox" id="showPwID"> Show password</div>
+                <!-- </label> -->
             </div>
-
             <button class="w-100 btn btn-lg btn-primary" type="button" id="submitID">Submit</button>
             <div id="result"></div>
-            <p class="mt-5 mb-3 text-muted">@author: namnguyen<br></p>
+            <p class="mt-5 mb-3 text-muted">@datn: lora-server-2021<br></p>
         </form>
     </main>
     <script>
         $(document).ready(function () {
             document.getElementById("submitID").addEventListener("click", onSignIn);
+            document.getElementById("showPwID").addEventListener("click", onShowPw);
+            document.getElementById("passwdID").addEventListener("keyup", onEnterPush);
+            document.getElementById("usernameID").addEventListener("keyup", onEnterPush);
+
+            function onEnterPush(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    document.getElementById("submitID").click();
+                }
+            }
+
             function onSignIn() {
                 var username = document.getElementById("usernameID").value;
                 var password = document.getElementById("passwdID").value;
@@ -101,10 +107,21 @@
                     },
                     error: function (err) {
                         console.log(err);
+                        window.alert("Login information invalid !");
                     },
                     data: sendInfo
                 });
             }
+
+            function onShowPw() {
+                var x = document.getElementById("passwdID");
+                if (x.type === "password") {
+                    x.type = "text";
+                } else {
+                    x.type = "password";
+                }
+            }
+
         })
     </script>
 </body>

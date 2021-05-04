@@ -243,15 +243,16 @@
                 $(`#gateway_status`).text('OFFLINE');
                 $(`#gateway_status`).css("color", '#FF0000');
             });
-
+            
             socket.on('sessionID', function (msg) {
                 console.log(msg);
                 debugger
                 document.title = `Server control site (${msg})`;
             });
-
+            
             socket.on('reload', function (msg) {
                 location.reload();
+                window.alert("Gateway has reconnected");
             });
 
         })
