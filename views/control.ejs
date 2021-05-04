@@ -221,10 +221,10 @@
                     $(`#node${i}_location`).text(msg[`node${i}_location`]);
                     $(`#node${i}_status`).text(msg[`node${i}_status`]);
                     $(`#node${i}_error`).text(msg[`node${i}_error`]);
-                    if (msg[`node${i}_status`] === 'ON') {
+                    if (msg[`node${i}_status`] === 'ON' && msg[`node${i}_error`] === 'NONE') {
                         $(`#node${i}_status`).css('background-color', '#00FF00');
                     }
-                    else if (msg[`node${i}_status`] === 'OFF' && !msg[`node${i}_error`]) {
+                    else if (msg[`node${i}_status`] === 'OFF' && msg[`node${i}_error`] === 'NONE') {
                         $(`#node${i}_status`).css('background-color', '#808080');
                     }
                     else if (msg[`node${i}_error`]) {
