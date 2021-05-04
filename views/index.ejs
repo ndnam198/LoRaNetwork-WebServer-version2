@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Nguyễn Đức Nam">
+    <meta name="generator" content="Hugo 0.82.0">
+    <title>LoRa Server - Sign in</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="../public/bootstrap5.0/css/bootstrap.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="../public/style.css" rel="stylesheet">
+
+    <!-- jQuery library -->
+    <script src="../public/jquery-3.6.0.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="../public/bootstrap5.0/js/bootstrap.min.js"></script>
+
+    <!-- Socket io -->
+    <script src='../public/socket.io.js'></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="/__/firebase/8.4.3/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="/__/firebase/8.4.3/firebase-analytics.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script src="/__/firebase/init.js"></script>
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+</head>
+
+<body class="text-center">
+
+    <main class="form-signin">
+        <!-- <form method="POST" action="/login"> -->
+        <form>
+            <img class="mb-4" src="../public/images/tux.svg" alt="" width="100" height="100">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+            <div class="form-floating">
+                <input type="text" name="username" class="form-control" id="usernameID" placeholder="Username" required>
+                <label for="usernameID">Username</label>
+            </div>
+
+            <div class="form-floating">
+                <input type="password" name="password" class="form-control" id="passwdID" placeholder="Password"
+                    required>
+                <label for="passwdID">Password</label>
+            </div>
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Show password
+                </label>
+            </div>
+
+            <button class="w-100 btn btn-lg btn-primary" type="button" id="submitID">Submit</button>
+            <div id="result"></div>
+            <p class="mt-5 mb-3 text-muted">@author: namnguyen<br></p>
+        </form>
+    </main>
+    <script>
+        $(document).ready(function () {
+            document.getElementById("submitID").addEventListener("click", onSignIn);
+            function onSignIn() {
+                var username = document.getElementById("usernameID").value;
+                var password = document.getElementById("passwdID").value;
+                var sendInfo = {
+                    "username": username,
+                    "password": password
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/login",
+                    dataType: "json",
+                    success: function (msg) {
+                        $("#result").empty().append(msg);
+                        /* request render new site */
+                        window.location.href = "/control";
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                    data: sendInfo
+                });
+            }
+        })
+    </script>
+</body>
+
+</html>
