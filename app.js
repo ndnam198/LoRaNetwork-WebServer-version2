@@ -41,6 +41,7 @@ try {
         console.log("pi connected, id: " + pi_socket.id)
         io.sockets.emit('reload', {});
 
+        /* Got data from Pi socket */
         pi_socket.on('data', function (bData) {
             data = bData.toString();
             if (data.includes('ping')) {
@@ -68,6 +69,7 @@ try {
             }
         });
 
+        /* Got close event */
         pi_socket.on('close', function () {
             console.log("pi disconnect, id: " + pi_socket.id);
             for (const i in pi_socket.userList) {
@@ -79,10 +81,12 @@ try {
 
         });
 
+        /* Got error event */
         pi_socket.on('error', function (err) {
             console.log(err)
         });
 
+        /* Socket for webUI user */
         io.on('connection', function (web_socket) {
             web_socket.id = id++;
             web_socket.login = isLogin;
@@ -96,20 +100,21 @@ try {
             web_socket.emit('gatewayConnect', {})
 
 
-            web_socket.on('controlAll', function (data) {
-                if (web_socket.login == true) {
-                    dbAsJson = modifier.getDbAsJson()
-                    console.log(data)
-                    let msg = {}
-                    for (let i = 0; i < dbAsJson.data.nodedata.node.length; i++) {
-                        msg['nodeID'] = dbAsJson.data.nodedata.node[i].nodeID._text;
-                        msg['status'] = data['status'];
-                        msg['opcode'] = constant.OPCODE['REQUEST_RELAY_CONTROL'];
-                        pi_socket.write(JSON.stringify(msg));
-                        console.log(msg);
-                    }
-                }
-            });
+            // web_socket.on('controlAll', function (data) {
+            //     if (web_socket.login == true) {
+            //         dbAsJson = modifier.getDbAsJson()
+            //         console.log(data)
+            //         let msg = {}
+            // for (let i = 0; i < dbAsJson.data.nodedata.node.length; i++) {
+            // msg['nodeID'] = dbAsJson.data.nodedata.node[i].nodeID._text;
+            // msg['nodeID'] = "0xBB"; /* Broadcast address */
+            // msg['status'] = data['status'];
+            // msg['opcode'] = constant.OPCODE['REQUEST_RELAY_CONTROL'];
+            // pi_socket.write(JSON.stringify(msg));
+            // console.log(msg);
+            // }
+            //     }
+            // });
 
             web_socket.on('controlSingle', function (data) {
                 if (web_socket.login == true) {

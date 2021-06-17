@@ -165,12 +165,12 @@
                 var sendInfo = {
                     "source": "browser",
                     "type": "control",
-                    "nodeID": '*',
+                    "nodeID": '187', /* 0xBB: broadcast address */
                     "status": "on",
                     "sequenceID": ++reqIndex,
                     "timestamp": Math.floor(new Date().getTime() / 1000)
                 }
-                socket.emit('controlAll', sendInfo);
+                socket.emit('controlSingle', sendInfo);
             }
 
             function offAllLightClick() {
@@ -178,12 +178,12 @@
                 var sendInfo = {
                     "source": "browser",
                     "type": "control",
-                    "nodeID": '*',
+                    "nodeID": '187',
                     "status": "off",
                     "sequenceID": ++reqIndex,
                     "timestamp": Math.floor(new Date().getTime() / 1000)
                 }
-                socket.emit('controlAll', sendInfo);
+                socket.emit('controlSingle', sendInfo);
             }
 
             function onSingleLightClick() {
