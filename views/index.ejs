@@ -55,24 +55,24 @@
     <main class="form-signin">
         <!-- <form method="POST" action="/login"> -->
         <form>
-            <img class="mb-4" src="../public/images/tux.svg" alt="" width="100" height="100">
-            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <img class="mb-4" src="../public/images/eye-moving.gif" alt="" width="100" height="100">
+            <h1 class="h3 mb-3 fw-normal">Đăng nhập</h1>
             <div class="form-floating">
                 <input type="text" name="username" class="form-control" id="usernameID" required>
-                <label for="usernameID">Username</label>
+                <label for="usernameID">Tài khoản</label>
             </div>
             <div class="form-floating">
                 <input type="password" name="password" class="form-control" id="passwdID" required>
-                <label for="passwdID">Password</label>
+                <label for="passwdID">Mật khẩu</label>
             </div>
             <div class="checkbox mb-3">
                 <!-- <label> -->
-                <div><input type="checkbox" id="showPwID"> Show password</div>
+                <div><input type="checkbox" id="showPwID"> Hiện mật khẩu</div>
                 <!-- </label> -->
             </div>
-            <button class="w-100 btn btn-lg btn-primary" type="button" id="submitID">Submit</button>
+            <button class="w-100 btn btn-lg btn-primary" type="button" id="submitID">Đăng nhập</button>
             <div id="result"></div>
-            <p class="mt-5 mb-3 text-muted">@datn: lora-server-2021<br></p>
+            <p class="mt-5 mb-3 text-muted">@datn: lora-server-2021 <br>@cre: nam162818</p>
         </form>
     </main>
     <script>
@@ -115,6 +115,8 @@
 
             function onShowPw() {
                 var x = document.getElementById("passwdID");
+                console.log("toggle show password");
+                debugger;
                 if (x.type === "password") {
                     x.type = "text";
                 } else {

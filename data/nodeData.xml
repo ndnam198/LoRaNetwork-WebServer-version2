@@ -39,12 +39,5 @@
             <status>off</status>
             <error>NONE</error>
         </node>
-        <node>
-            <index>4</index>
-            <nodeID>21</nodeID>
-            <location>GIAI_PHONG_4</location>
-            <status>off</status>
-            <error>NONE</error>
-        </node>
     </nodedata>
 </data>

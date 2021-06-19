@@ -69,20 +69,24 @@
                 </div>
             </div>
             <div class="row justify-content-xl-evenly">
-                <!-- Single node block -->
-                <div class="col-2 text-center border rounded p-2" id="node0_background">
-                    <div class="border border-dark border-secondary p-1">
+                <!-- ANCHOR Node 1: Single node block -->
+                <div style="background-color:#d9f0ff;" class="col-2  text-center border border-dark rounded p-2"
+                    id="node0_background">
+                    <div class="border border-dark p-1">
                         <span>ID: </span><span id="node0_id">NodeID0</span>
                     </div>
                     <div>
                         <div class="p-1">
-                            <span>Location: </span><span id="node0_location"></span>
+                            <span>Vị trí: </span><span id="node0_location"></span>
+                        </div>
+                        <div>
+                            <span>FriendID: </span><span id="node0_friendID"></span>
                         </div>
                         <div class="p-1" id="node0_status">
                             OFF
                         </div>
                         <div>
-                            <span class="p-2">Error: </span><span id="node0_error"></span>
+                            <span class="p-2">Mã lỗi: </span><span id="node0_error"></span>
                         </div>
                         <div class="p-2 d-flex justify-content-center">
                             <div class="btn-group" role="group">
@@ -93,20 +97,24 @@
                     </div>
                     <div hidden class="spinner-border text-secondary" id="node0_loader" role="status"></div>
                 </div>
-                <!-- Single node block -->
-                <div class="col-2 text-center border rounded p-2" id="node1_background">
-                    <div class="border border-dark border-secondary p-1">
+                <!-- ANCHOR Node 2: Single node block -->
+                <div style="background-color:#d9f0ff;" class="col-2 text-center border border-dark rounded p-2"
+                    id="node1_background">
+                    <div class="border border-dark p-1">
                         <span>ID: </span><span id="node1_id">NodeID1</span>
                     </div>
                     <div>
                         <div class="p-1">
-                            <span>Location: </span><span id="node1_location"></span>
+                            <span>Vị trí: </span><span id="node1_location"></span>
+                        </div>
+                        <div>
+                            <span>FriendID: </span><span id="node1_friendID"></span>
                         </div>
                         <div class="p-1" id="node1_status">
                             OFF
                         </div>
                         <div>
-                            <span class="p-2">Error: </span><span id="node1_error"></span>
+                            <span class="p-2">Mã lỗi: </span><span id="node1_error"></span>
                         </div>
                         <div class="p-2 d-flex justify-content-center">
                             <div class="btn-group" role="group">
@@ -117,21 +125,25 @@
                     </div>
                     <div hidden class="spinner-border text-secondary" id="node1_loader" role="status"></div>
                 </div>
-                <!-- Single node block -->
-                <div class="col-2 text-center border rounded p-2" id="node2_background">
-                    <div class="border border-dark border-secondary p-1">
+                <!-- ANCHOR Node 3: Single node block -->
+                <div style="background-color:#d9f0ff;" class="col-2 text-center border border-dark rounded p-2"
+                    id="node2_background">
+                    <div class="border border-dark p-1">
                         <span>ID: </span><span id="node2_id">NodeID2</span>
                     </div>
                     <div>
                         <div class="p-1">
-                            <span>Location: </span><span id="node2_location"></span>
+                            <span>Vị trí: </span><span id="node2_location"></span>
+                        </div>
+                        <div>
+                            <span>FriendID: </span><span id="node2_friendID"></span>
                         </div>
                         <div class="p-1" id="node2_status">
                             OFF
                         </div>
                         <div class="loader"></div>
                         <div>
-                            <span class="p-2">Error: </span><span id="node2_error"></span>
+                            <span class="p-2">Mã lỗi: </span><span id="node2_error"></span>
                         </div>
                         <div class="p-2 d-flex justify-content-center">
                             <div class="btn-group" role="group">
@@ -143,9 +155,45 @@
                     <div hidden class="spinner-border text-secondary" id="node2_loader" role="status"></div>
                 </div>
             </div>
-            <div class="row justify-content-xxl-start">
-                <div class="col-1 bg-primary border rounded"></div>
-            </div>
+        </div>
+
+        <div>
+            <table class="table" align="center" style="width: 30%; top:100px;position:relative">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tên trường (Field name)</th>
+                        <th scope="col">Chú thích (Description)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>ID</td>
+                        <td>Định danh của node, là giá trị duy nhất</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Vị trí</td>
+                        <td>Vị trí của node trên đường, ví dụ: GIAI_PHONG_1</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>FriendID</td>
+                        <td>Định danh node bạn, bản tin sẽ được relay tới node bạn nếu node chủ nhận được</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td>Trạng thái đèn</td>
+                        <td>ON hay OFF</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">5</th>
+                        <td>Mã lỗi</td>
+                        <td>Tình trạng lỗi node đang gặp phải, ví dụ: Không thể bật đèn, Không thể tắt đèn, ...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </main>
     <script>
@@ -243,13 +291,13 @@
                 $(`#gateway_status`).text('OFFLINE');
                 $(`#gateway_status`).css("color", '#FF0000');
             });
-            
+
             socket.on('sessionID', function (msg) {
                 console.log(msg);
                 debugger
                 document.title = `Server control site (${msg})`;
             });
-            
+
             socket.on('reload', function (msg) {
                 location.reload();
                 window.alert("Gateway has reconnected");

@@ -37,7 +37,6 @@ module.exports = {
             if (currentXml.data.nodedata.node[i].nodeID._text == id) {
                 /* if node has no error */
                 console.log('update node id = ' + id);
-                console.log('update node id = ' + id);
                 if (currentXml.data.nodedata.node[i].status._text != status && status != null)
                     currentXml.data.nodedata.node[i].status._text = status;
                 if (currentXml.data.nodedata.node[i].location._text != location && location != null)
