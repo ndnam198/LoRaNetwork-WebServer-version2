@@ -2,7 +2,7 @@
     <users>
         <user>
             <username>admin</username>
-            <password>2212</password>
+            <password>admin</password>
         </user>
         <user>
             <username>minh</username>
@@ -21,23 +21,23 @@
         <node>
             <index>1</index>
             <nodeID>18</nodeID>
-            <location>GIAI_PHONG_1</location>
-            <status>OFF</status>
-            <error>LIGHT_ON_FAILED</error>
+            <location>N/A</location>
+            <status>N/A</status>
+            <error>N/A</error>
         </node>
         <node>
             <index>2</index>
             <nodeID>19</nodeID>
-            <location>GIAI_PHONG_1</location>
-            <status>OFF</status>
-            <error>NONE</error>
+            <location>N/A</location>
+            <status>N/A</status>
+            <error>N/A</error>
         </node>
         <node>
             <index>3</index>
             <nodeID>20</nodeID>
-            <location>GIAI_PHONG_3</location>
-            <status>off</status>
-            <error>NONE</error>
+            <location>N/A</location>
+            <status>N/A</status>
+            <error>N/A</error>
         </node>
     </nodedata>
 </data>

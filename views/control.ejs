@@ -44,22 +44,23 @@
 
 </head>
 
-<body class="">
+<body class=""
+    style="background-image: url(../public/images/lora.jpg);background-size:cover ;background-attachment: fixed">
     <main class="">
         <div class="container">
             <!-- Heading -->
             <div class="w-100 d-flex justify-content-center p-4">
                 <div class="text-uppercase">
-                    <h1 class="font-weight-bold">hệ thống điều khiển chiếu sáng</h1>
+                    <h1 class="font-weight-bold">màn hình giám sát - điều khiển chiếu sáng</h1>
                 </div>
             </div>
-            <div class='row'>
-                <div>
-                    Gateway:
-                    <span class="p-1" id="gateway_status">
-                        OFFLINE
-                    </span>
-                </div>
+            <div>
+                <span class="p-3">
+                    <span class=" fs-5">Gateway: </span>
+                    <span class=" fs-5" style="color:red;" id="gateway_status">OFFLINE</span>
+                    <span class="spinner-grow text-secondary" id="gateway_spinner" style="visibility:hidden"
+                        role="status"></span>
+                </span>
             </div>
             <!-- Button "BẬT TOÀN BỘ - TẮT TOÀN BỘ" -->
             <div class="d-flex p-4">
@@ -79,9 +80,9 @@
                         <div class="p-1">
                             <span>Vị trí: </span><span id="node0_location"></span>
                         </div>
-                        <div>
+                        <!-- <div>
                             <span>FriendID: </span><span id="node0_friendID"></span>
-                        </div>
+                        </div> -->
                         <div class="p-1" id="node0_status">
                             OFF
                         </div>
@@ -107,9 +108,9 @@
                         <div class="p-1">
                             <span>Vị trí: </span><span id="node1_location"></span>
                         </div>
-                        <div>
+                        <!-- <div>
                             <span>FriendID: </span><span id="node1_friendID"></span>
-                        </div>
+                        </div> -->
                         <div class="p-1" id="node1_status">
                             OFF
                         </div>
@@ -135,9 +136,9 @@
                         <div class="p-1">
                             <span>Vị trí: </span><span id="node2_location"></span>
                         </div>
-                        <div>
+                        <!-- <div>
                             <span>FriendID: </span><span id="node2_friendID"></span>
-                        </div>
+                        </div> -->
                         <div class="p-1" id="node2_status">
                             OFF
                         </div>
@@ -158,8 +159,9 @@
         </div>
 
         <div>
-            <table class="table" align="center" style="width: 30%; top:100px;position:relative">
-                <thead class="table-dark">
+            <table class="table table-dark table-striped" align="center"
+                style="width: 50%; top:100px;position:relative">
+                <thead class="">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Tên trường (Field name)</th>
@@ -177,18 +179,18 @@
                         <td>Vị trí</td>
                         <td>Vị trí của node trên đường, ví dụ: GIAI_PHONG_1</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <th scope="row">3</th>
                         <td>FriendID</td>
                         <td>Định danh node bạn, bản tin sẽ được relay tới node bạn nếu node chủ nhận được</td>
-                    </tr>
+                    </tr> -->
                     <tr>
-                        <th scope="row">4</th>
+                        <th scope="row">3</th>
                         <td>Trạng thái đèn</td>
                         <td>ON hay OFF</td>
                     </tr>
                     <tr>
-                        <th scope="row">5</th>
+                        <th scope="row">4</th>
                         <td>Mã lỗi</td>
                         <td>Tình trạng lỗi node đang gặp phải, ví dụ: Không thể bật đèn, Không thể tắt đèn, ...</td>
                     </tr>
@@ -199,6 +201,13 @@
     <script>
         /* Reload function every 2000ms */
         var socket = io();
+        var isGwProcessing = false;
+        var isDataReturn = true;
+        var timeOutHandle;
+        const OFFLINE = 1;
+        const READY = 2;
+        const PROCESSING = 3;
+
         $(document).ready(function () {
             /* Add handler for control button */
             let reqIndex = 0;
@@ -208,6 +217,47 @@
                 document.getElementById(`onButton${i}_id`).addEventListener("click", onSingleLightClick);
                 document.getElementById(`offButton${i}_id`).addEventListener("click", offSingleLightClick);
             }
+
+            function updateGwState(state, id = undefined) {
+                switch (state) {
+                    case OFFLINE:
+                        isGwProcessing = false;
+                        console.log("---> GATEWAY OFFLINE");
+                        $(`#gateway_status`).text('OFFLINE');
+                        $(`#gateway_status`).css("color", '#FF0000');
+                        $(`#gateway_spinner`).css("visibility", 'hidden');
+                        break;
+                    case READY:
+                        isGwProcessing = false;
+                        console.log("---> GATEWAY OFFLINE");
+                        $(`#gateway_status`).text('READY');
+                        $(`#gateway_status`).css("color", '#00FF00');
+                        $(`#gateway_spinner`).css("visibility", 'hidden');
+                        break;
+                    case PROCESSING:
+                        isGwProcessing = true;
+                        isDataReturn = false;
+                        console.log("---> GATEWAY OFFLINE");
+                        $(`#gateway_status`).text('PROCESSING...');
+                        $(`#gateway_status`).css("color", '#0000FF');
+                        $(`#gateway_spinner`).css("visibility", 'visible');
+                        timeOutHandle = setTimeout(function () {
+                            if (isDataReturn == false) {
+                                window.alert(`Request Timeout`);
+                                if (id) {
+                                    $(`#node${id}_error`).text("TIMEOUT");
+                                    $(`#node${id}_status`).css('background-color', '#FF0000');
+                                }
+                                updateGwState(READY);
+                            }
+                        }, 20000);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            /* ANCHOR: Emit event */
             function onAllLightClick() {
                 console.log("Turn ON all");
                 var sendInfo = {
@@ -218,7 +268,14 @@
                     "sequenceID": ++reqIndex,
                     "timestamp": Math.floor(new Date().getTime() / 1000)
                 }
-                socket.emit('controlSingle', sendInfo);
+
+                if (isGwProcessing != true) {
+                    updateGwState(PROCESSING);
+                    socket.emit('controlSingle', sendInfo);
+                }
+                else {
+                    window.alert("Gateway's busy processing");
+                }
             }
 
             function offAllLightClick() {
@@ -231,7 +288,14 @@
                     "sequenceID": ++reqIndex,
                     "timestamp": Math.floor(new Date().getTime() / 1000)
                 }
-                socket.emit('controlSingle', sendInfo);
+
+                if (isGwProcessing != true) {
+                    updateGwState(PROCESSING);
+                    socket.emit('controlSingle', sendInfo);
+                }
+                else {
+                    window.alert("Gateway's busy processing");
+                }
             }
 
             function onSingleLightClick() {
@@ -245,7 +309,14 @@
                     "sequenceID": ++reqIndex,
                     "timestamp": Math.floor(new Date().getTime() / 1000)
                 }
-                socket.emit('controlSingle', sendInfo);
+
+                if (isGwProcessing != true) {
+                    updateGwState(PROCESSING, nodeNumber);
+                    socket.emit('controlSingle', sendInfo);
+                }
+                else {
+                    window.alert("Gateway's busy processing");
+                }
             }
 
             function offSingleLightClick() {
@@ -259,9 +330,17 @@
                     "sequenceID": ++reqIndex,
                     "timestamp": Math.floor(new Date().getTime() / 1000)
                 }
-                socket.emit('controlSingle', sendInfo);
+
+                if (isGwProcessing != true) {
+                    updateGwState(PROCESSING, nodeNumber);
+                    socket.emit('controlSingle', sendInfo);
+                }
+                else {
+                    window.alert("Gateway's busy processing");
+                }
             }
 
+            /* ANCHOR: Got socket event */
             socket.on('updateData', function (msg) {
                 console.log(msg)
                 for (let i = 0; i < 3; i++) {
@@ -281,26 +360,48 @@
                 }
             });
 
+            socket.on('respondData', function (msg) {
+                console.log(msg)
+                for (let i = 0; i < 3; i++) {
+                    $(`#node${i}_id`).text(msg[`node${i}_id`]);
+                    $(`#node${i}_location`).text(msg[`node${i}_location`]);
+                    $(`#node${i}_status`).text(msg[`node${i}_status`]);
+                    $(`#node${i}_error`).text(msg[`node${i}_error`]);
+                    if (msg[`node${i}_status`] === 'ON' && msg[`node${i}_error`] === 'NONE') {
+                        $(`#node${i}_status`).css('background-color', '#00FF00');
+                    }
+                    else if (msg[`node${i}_status`] === 'OFF' && msg[`node${i}_error`] === 'NONE') {
+                        $(`#node${i}_status`).css('background-color', '#808080');
+                    }
+                    else if (msg[`node${i}_error`]) {
+                        $(`#node${i}_status`).css('background-color', '#FF0000');
+                    }
+                }
+                updateGwState(READY);
+                if (timeOutHandle) {
+                    clearTimeout(timeOutHandle);
+                }
+                isDataReturn = true;
+            });
+
             socket.on('gatewayConnect', function (msg) {
-                $(`#gateway_status`).text('ONLINE');
-                $(`#gateway_status`).css("color", '#00FF00');
+                updateGwState(READY);
             });
 
             socket.on('gatewayDisconnect', function (msg) {
-                window.alert("Warning! Gateway has disconnected");
-                $(`#gateway_status`).text('OFFLINE');
-                $(`#gateway_status`).css("color", '#FF0000');
+                window.alert("Warning! Gateway disconnected");
+                updateGwState(OFFLINE);
             });
 
             socket.on('sessionID', function (msg) {
                 console.log(msg);
-                debugger
                 document.title = `Server control site (${msg})`;
             });
 
             socket.on('reload', function (msg) {
                 location.reload();
-                window.alert("Gateway has reconnected");
+                updateGwState(READY);
+                window.alert("Gateway reconnected");
             });
 
         })

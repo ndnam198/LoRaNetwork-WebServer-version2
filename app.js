@@ -41,6 +41,16 @@ try {
         console.log("pi connected, id: " + pi_socket.id)
         io.sockets.emit('reload', {});
 
+        function webEmitToAll(event, data) {
+
+            console.log('----> emit all ' + event);
+            console.log('emit data');
+            console.log(data);
+            for (const i in pi_socket.userList) {
+                pi_socket.userList[i].emit(event, data);
+            }
+        }
+
         /* Got data from Pi socket */
         pi_socket.on('data', function (bData) {
             data = bData.toString();
@@ -60,9 +70,12 @@ try {
                     msg[constant.MSG_INDEX['DATA_RELAY_STATE']],
                     msg[constant.MSG_INDEX['DATA_ERR_CODE']],
                     function () {
-                        for (const i in pi_socket.userList) {
-                            console.log('----> emit updateData to userID: ', i);
-                            pi_socket.userList[i].emit('updateData', modifier.getDbAsObj());
+                        if (msg[constant.MSG_INDEX['HEADER_MSG_TYPE']] == constant.MSG_TYPE['MSG_TYPE_NOTIF']) {
+                            webEmitToAll('updateData', modifier.getDbAsObj());
+                        }
+                        else if (msg[constant.MSG_INDEX['HEADER_MSG_TYPE']] == constant.MSG_TYPE['MSG_TYPE_RESPONSE']) {
+                            webEmitToAll('respondData', modifier.getDbAsObj());
+                            console.log('request fulfilled');
                         }
                     }
                 );
@@ -72,10 +85,7 @@ try {
         /* Got close event */
         pi_socket.on('close', function () {
             console.log("pi disconnect, id: " + pi_socket.id);
-            for (const i in pi_socket.userList) {
-                console.log('----> emit gatewayDisconnect to userID: ', i);
-                pi_socket.userList[i].emit('gatewayDisconnect', {});
-            }
+            webEmitToAll('gatewayDisconnect', {});
             console.log('>>>>> delete pi_socket.id: ', pi_socket.id);
             delete pi_sock_list[pi_socket.id];
 
@@ -92,32 +102,15 @@ try {
             web_socket.login = isLogin;
             web_sock_list[web_socket.id] = web_socket;
             pi_socket.userList[web_socket.id] = web_socket;
-
             console.log('new user connection, id: ' + web_socket.id);
-            web_socket.emit('updateData', modifier.getDbAsObj());
-            web_socket.emit('sessionID', web_socket.id);
-            console.log('----> emit gatewayConnect');
-            web_socket.emit('gatewayConnect', {})
 
-
-            // web_socket.on('controlAll', function (data) {
-            //     if (web_socket.login == true) {
-            //         dbAsJson = modifier.getDbAsJson()
-            //         console.log(data)
-            //         let msg = {}
-            // for (let i = 0; i < dbAsJson.data.nodedata.node.length; i++) {
-            // msg['nodeID'] = dbAsJson.data.nodedata.node[i].nodeID._text;
-            // msg['nodeID'] = "0xBB"; /* Broadcast address */
-            // msg['status'] = data['status'];
-            // msg['opcode'] = constant.OPCODE['REQUEST_RELAY_CONTROL'];
-            // pi_socket.write(JSON.stringify(msg));
-            // console.log(msg);
-            // }
-            //     }
-            // });
+            webEmitToSingle('updateData', modifier.getDbAsObj());
+            webEmitToSingle('sessionID', web_socket.id);
+            webEmitToSingle('gatewayConnect', {})
 
             web_socket.on('controlSingle', function (data) {
                 if (web_socket.login == true) {
+                    console.log(`Got web user [${web_socket.id}] request`);
                     data['opcode'] = constant.OPCODE['REQUEST_RELAY_CONTROL']
                     console.log(data);
                     pi_socket.write(JSON.stringify(data))
@@ -131,6 +124,13 @@ try {
                 delete pi_socket.userList[web_socket.id]
                 delete web_sock_list[web_socket.id];
             });
+
+            function webEmitToSingle(event, data) {
+                console.log('----> emit single ' + event + ' to userID: ' + web_socket.id);
+                console.log('emit data');
+                console.log(data);
+                web_socket.emit(event, data);
+            }
         });
     });
 } catch (error) {

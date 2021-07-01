@@ -12,6 +12,12 @@ const MSG_INDEX = {
     RESET_CAUSE: 9,
 }
 
+const MSG_TYPE = {
+    MSG_TYPE_REQUEST: 0,
+    MSG_TYPE_RESPONSE: 1,
+    MSG_TYPE_NOTIF: 2,
+}
+
 const OPCODE = {
     OPCODE_NONE: 0,
     REQUEST_STATE: 1,
@@ -26,4 +32,4 @@ const OPCODE = {
     RESPONSE_MESH_NODE_ID_UPDATE: 5 + 100,
 }
 
-module.exports = { MSG_INDEX, OPCODE }
+module.exports = { MSG_INDEX, OPCODE, MSG_TYPE }
